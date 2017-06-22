@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 执行环境, 是javascript中的一个重要概念, 执行环境限制了 变量或者函数有权访问的其他数据, 规定了他们各自的行为  每个执行环境都有一个与之关联的 变量对象. 在这每个执行环境中所有的变量和函数都保存在与之对应的 环境变量对象 中 */
+    /* 全局环境变量是最外围的一个执行环境.根据ECMAScript 实现所在宿主环境的不同.表示执行环境的变量也不同,
+       在web 中, 全局执行环境是window对象, 因此: 所有的全局中的变量个函数都是作为 window对象的属性和方法, 创建的.
+        某个执行环境中的所有代码执行完毕后, 该环境被销毁, 保存在其中的所有变量和函数定义也随之销毁(在全局执行环境window中,
+        直到应用退出, 才会被销毁, 比如在关闭网页或浏览器后) */
+    /* 函数环境执行流:
+       每个函数都有自己的执行环境, 当执行流进入一个函数时, 函数的执行环境就会被推入一个环境栈中.
+        而在函数执行后, 栈将其弹出, 把控制权交给之前的执行环境, 这就是ECMAScript程序的执行机制 */
+
+    /* 作用域链:
+        在代码在一个环境中执行时, 就会创建变量对象的一个 作用域链.
+        作用域链是为了保证对 执行环境 有权访问的所有 变量 函数 的有序访问.
+        作用域链的前端, 始终都是当前执行的代码所在环境的变量对象(window?).
+        如果这个环境是一个函数, 则将其 活动对象(调用对象?) 多为变量对象.
+        多动对象在最开始只包含一个变量, 即arguments对象,(不存在与全局变量中).
+      全局执行环境的变量对象 始终都是作用域链中的最后一个对象 */
+
+    var color = 'blue';
+
+    function changeColor() {
+      if (color === 'blue') {
+        color = 'red';
+      } else {
+        color = 'blue';
+      }
+      console.log(color, arguments, window);
+    }
+    changeColor();
+    console.log(color, window.color); // red
+    /* 这个例子中, 函数changeColor 的作用域链包含两个对象:  他自己的变量对象(其中定义这arguments对象) 和全局环境变量对象
+      可以在函数中访问color 是因为在作用域链window中有 color: 'red'方法  */
+    // 在局部作用域中定义的变量可以在局部环境中与全局变量交换使用:
+    var name = 'bob';
+
+    function changeName() {
+      var anotherName = 'ken';
+
+      function swapName() {
+        var tempName = anotherName;
+        anotherName = name;
+        name = tempName;
+        console.log(tempName, anotherName, name); // ken bob ken
+      }
+      swapName();
+      console.log(anotherName, name); // bob ken
+    }
+    changeName();
+    console.log(name); // ken
+    // 上面的代码共有3个执行环境, 每个执行环境中的访问权限为上所示.
+    /* 内部环境可以通过作用域链访问所有的外部环境, 但外部环境不能访问内部环境还总的任何变量和函数.
+       这些环境之间的练习是线性的, 有次序的,每个环境都可以向上搜索作用域链, 以查询变量和函数名,
+       但是任何环境都不能通过向下搜索作用域链而进入另一个指向环境*/
+    // 函数的参数也被当作变量对待, 因此其访问规则与执行环境中的其他变量相同
+  </script>
+</body>
+
+</html>

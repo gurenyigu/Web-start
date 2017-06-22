@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 有其他OO语言的开发人员看到独立的构造函数和原型时, 可能会感到困惑.
+                                                动态原型模式正是致力于解决这个问题的一个方案, 它把所有信息都封装在了构造函数中,
+                                                而通过在构造函数中初始化原型(仅在必要的情况下), 还保持了 同时使用构造函数和原型的优点.
+                                                换句话说, 可以通过检查某个应该存在的方法是否有效, 来决定是否需要初始化原型, example: */
+
+    function Person(name, age, job) {
+      // 属性
+      this.name = name;
+      this.age = age;
+      this.job = job;
+      // 方法
+      if (typeof this.sayNname != 'function') {
+        Person.prototype.sayName = function() {
+          console.log(this.name);
+        };
+      }
+    }
+
+    var friend = new Person('nico', 10, 'Engineer');
+    friend.sayName(); // nico
+    /* 注意构造函数中的方法部分, 这里只在 sayName() 方法不存在的情况下, 才会添加到原型中
+      这段代码只在初次调用构造函数时才会执行. 此后 原型已经完成初始化, 不再需要做什么修改了.
+      不过要记住,这里对原型所做的修改, 能够立即在所有实例中得到反映. 因此, 这种方法确实可以说非常完美.
+      其中, if语句检查的可以是初始化之后应该存在的任何属性或者方法 -- 不必用一大堆if 语句检查每个属性和方法；
+      只要检查其中一个即可, 对于采用这种模式创建的对象, 还可以使用 instanceof 操作符检测'类型' */
+
+
+    /* 使用动态原型模式时, 不能使用对象字面量重写原型. 前面的简便的原型写法中提到.
+      如果在已经创建了实例的情况下重写原型, 那么就会切断现有实例与新原型之间的关系 */
+  </script>
+</body>
+
+</html>

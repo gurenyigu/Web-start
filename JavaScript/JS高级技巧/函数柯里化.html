@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="my-btn">点击</button>
+  <script>
+    /* 与函数绑定相关的主题是函数柯里化(function currying),它用于创建已经设置好了一个或多个参数的函数.函数柯里化的基本方法和函数绑定是一样的: 使用一个闭包返回一个函数. 两者的区别在于当函数被调用时,返回的函数还需要设置一些传入的参数. example: */
+    function add(num1, num2) {
+      return num1 + num2;
+    }
+
+    function curriedAdd(num2) {
+      return add(5, num2);
+    }
+
+    console.log(add(2, 3)); // 5
+    console.log(curriedAdd(3)); // 8
+    /* 这段代码定义了两个函数: add() 和 curriedAdd() 后者本质上是在任何情况下第一个参数为5的 add() 版本
+    尽管在技术上来说 curriedAdd() 并非柯里化函数, 但是它很好的展示了其概念. */
+
+    /* 柯里化函数通常由以下步骤动态创建: 调用另一个函数并为它传入要柯里化的函数 和 必要的参数
+    下面是创建柯里化函数的通用方式: */
+    function curry(fn) {
+      var args = Array.prototype.slice.call(arguments, 1);
+      return function() {
+        var innerArgs = Array.prototype.slice.call(arguments);
+        var finalArgs = args.concat(innerArgs);
+        return fn.apply(null, finalArgs);
+      };
+    }
+    /* curry() 函数的主要工作就是将被返回函数的参数进行排序. curry() 的第一个参数是要进行柯里化的函数,
+     其他参数是要传入的值. 为了获取第一个参数之后的所有参数, 在arguments 对象上调用了 slice() 方法, 并传入参数1,
+     表示被返回的数组 从第二个参数开始的所有参数. 然后args数组包含了来自外部的参数. 在内部函数中, 创建了innerArgs 数组
+     用来存放所有(实例化后)传入的参数(这里再次使用celic), 有了存放来自外部函数和内部函数的参数数组后, 就可以使用 concat()
+     方法 将他们组合为 finalArgs . 感受使用 apply() 将结果传递给该函数. 这里没有考虑执行环境, 所以为 null */
+
+    // 应用:
+    var curriedAdd = curry(add, 5);
+    console.log(curriedAdd(3)); // 8
+    /* 这个例子中,创建了第一个参数绑定为5 的add() 的柯里化版本. 当调用 curriedAdd() 并传入 3 时,
+    3 会成为 add() 的第二个参数, 同时第一个参数依然是5, 最户结果便是和8. 你也可以像下面例子那样给出所有的函数参数: */
+    var curriedAdd = curry(add, 5, 12);
+    console.log(curriedAdd()); // 17
+    // 上面代码中, 柯里化的add() 函数两个参数都提供了, 所以之后就无需传递参数了.
+
+    // 函数柯里化还常常作为函数绑定的一部分包含在 其中, 构造出更复杂的bind() 函数 example:
+    function bind(fn, context) {
+      var args = Array.prototype.slice.call(arguments, 2);
+      return function() {
+        var innerArgs = Array.prototype.slice.call(arguments);
+        var finalArgs = args.concat(innerArgs);
+        return fn.apply(context, finalArgs);
+      };
+    }
+
+    /* 对 curry() 函数的主要更改在于传入的参数的个数, 以及它如何影响代码的结果.
+    curry() 仅仅接受一个要包裹的函数作为参数, 而bind() 同时接收函数和一个 object 对象.
+    这表示给被绑定的函数的参数是从第三个开始, 而不是第二个, 这就要修改 slice() 的第初调用.
+    另一初更改是在倒数第 3 行将object 对象传递给 apply(. 当使用 bind() 时, 他会返回绑定到给定环境的函数
+    并且可能它其中某些函数参数已经被设好, 当你想除了 event 对象再额外给事件处理程序传递参数时,
+    这非常有用, example: */
+    var handler = {
+      message: 'Event handled',
+      handleClick: function(name, event) {
+        console.log(this.message + ':' + name + ':' + event.type);
+      }
+    };
+
+    var btn = document.getElementById('my-btn');
+    // console.log(btn);
+    btn.addEventListener('click', bind(handler.handleClick, handler, 'my-btn'), false); // Event handled:my-btn:click
+
+    /* 在这个例子中, handler.handleClick()方法接收两个参数: 要处理的元素的名字和event 对象,
+      作为第三个参数传递给bind(函数的名字, 又被传递给了handler.handleClick()),
+      并且handler.handleClick() 也会同时接收到 event 对象 */
+
+    // EVMAScript 的 bind(方法要实现函数柯里化, 只要在this 的值之后再传入另一个参数即可: )
+    btn.addEventListener('click', handler.handleClick.bind(handler, 'my-btn-bind'), false); // Event handled:my-btn-bind:click
+    /* JavaScript 中的柯里化还是那户和绑定函数提供了枪法的动态函数创建功能. 使用bind() 还是curry() 需很据是否需要 object
+    对象响应来决定. 他们都能用于创建复杂的算法和功能, 当然两者都不能滥用, 因为每个函数都会带来额外的参数 */
+  </script>
+</body>
+
+</html>

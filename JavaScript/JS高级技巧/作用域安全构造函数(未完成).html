@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 作用域安全的构造函数.
+    // 构造函数就是一个使用new操作符调用的函数, 当使用 new 调用时, 构造函数内用到的this 对象会指向新创建的对象实例.
+    /* 但是当我们没用通过 new 操作符创建实例时, 构造函数的属性和方法被加到window对象上, 这是 this 对象的完绑定造成的.
+      例如 window 的name属性被覆盖, 其原作用是用来识别链接目标和frame的, 这里偶然的覆盖会导致页面上出现其他错误
+      解决方法就是, 创建一个作用域安全的构造函数: */
+    // 作用域安全的构造函数在进任何更改前, 够先确认 this 对象是正确类型的实例. 如果不是, 那么会创建新的实例, 并返回, example:
+    function Person(name, age, job) {
+      // 使用 new 实例化 会拥有实例化原型的标签
+      if (this instanceof Person) {
+        this.name = name;
+        this.age = age;
+        this.job = job;
+      } else {
+        // 如果没有使用 new 实例化
+        return new Person(name, age, job);
+      }
+    }
+    // 创建实例化在 window 上, 一般的构造函数 这时的方法会在window 上
+    var person1 = Person('Nico', 20, 'singer');
+    console.log(window.name); // 空的
+    console.log(person1.name); // Nico
+    var person2 = new Person('shelby', 30, 'Ergonomist');
+    console.log(person2.name); // shelby
+    /* 这段代码中的Person 构造函数添加了一个检查并确保 this 对象是 Person 的if 语句,
+    他表示要么使用 new 操作符, 要么在现有的Person 实例环境中调用构造函数. 任何一种情况下, 对象初始话都会成功
+    这样就可以避免在全局对象上以外设置属性 */
+  </script>
+</body>
+
+</html>

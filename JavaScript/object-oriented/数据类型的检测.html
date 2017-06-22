@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 类型检测:
+    // 基本类型:
+    var str = 'Nico';
+    var bol = true;
+    var num = 20;
+    var n = null;
+    var obj = new Object();
+    console.log(str, bol, num, n, obj); // Nico true 20 null Object
+
+    // 检测引用类型时, 使用instanceof操作符, 来检测他是什么类型的对象
+    // Object instanceof constructor
+    // instanceof 操作符用来检测一个对象的原型中是否存在 实例对象的prototype属性
+    var obj1 = {};
+    var arr = [];
+    var arr1 = new Array();
+    var reg = /w/i;
+    console.log(obj1 instanceof Object); // true
+    console.log(arr instanceof Array); // true
+    console.log(reg instanceof RegExp); // true
+    console.log(arr1 instanceof Object); // true
+    // 引用类型值都是 Object 的实例, 所以, 在检测一个引用 类型的值和 Object 构造函数时, instanceof 操作符始终返回true(也因浏览器而异)
+    // 用 instanceof 检测基本类型时, 该操作符始终返回false. 因为基本类型不是对象
+  </script>
+</body>
+
+</html>

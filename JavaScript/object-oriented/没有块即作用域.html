@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 在javascript 中区别与其他高级编程语言的规则:
+     */
+    if (1) {
+      var i = 'block';
+    }
+    console.log(i); // block
+    /* 这里的if 语句中定义了变量color ,在如C , C++, JAVA中, 在if 执行完后会销毁,
+        在javascript 中, if 语句中声明的变量会将变量添加到全局当前执行环境中,
+        这一特点同样应用于for 语句中 */
+    for (var i = 0; i < 10; i++) {
+      console.log(i);
+    }
+    console.log(i); // 10
+    /* 对与有块级作用域的语言来说, for 语句初始化变量的表达式所定义的变量, 只会存在于循环的环境之中,
+      对于javascript 来说, 有for 语句创建的变量i 级是在for 循环执行结束后, 也依旧会存在与循环外部的环境中*/
+
+    // 声明变量:
+    /* 使用var 声明变量会自动被添加到最近的环境中.  在函数内部, 最接近的环境就是函数的局部环境,
+       在with语句中, 最近的环境是函数环境. 如果初始化变量时没有使用var 声明, 该变量会自动被添加到全局环境. */
+    function add(num1, num2) {
+      var sum = num1 + num2;
+      return sum;
+    }
+    var result = add(1, 2); // 3
+    // console.log(sum); //is not defined
+    /* 以上代码中的函数 add() 定义了一个名为 sum 的局部变量. 该变量包含加法操作的结果. 虽然在函数中返回了,
+      但变量sum在函数外部是访问不到的. 如果省略这个例子中的var 关键字,那么add()执行结束后, sum也将访问到 */
+
+    function add1(num1, num2) {
+      sum = num1 + num2;
+      return sum;
+    }
+    var result1 = add1(3, 4);
+    console.log(result1); //7
+    console.log(sum); // 7
+    /* 这个例子中, 变量sum在被初始化赋值时没有使用var 关键字. 于是, 当调用完add1()之后, 添加到全局环境中的sum将继续存在
+       即使函数已经执行完成, 后面的代码依旧可以访问它 ( 函数的参数是函数作用域内的变量, 外部环境无法访问 ) */
+    /*
+      在javascript 代码编写中中, 不声明而直接初始化变量是一个常见的错误做法, 会引起未知的错误,
+      在严格模式下, 未经声明的变量会导致错误!
+    */
+
+    // 查询标识符
+    /* 当在某个环境中为了读取或者写入而引用一个标识符时, 必须同过搜索来确认该标识符实际代表什么.
+       搜索过程从作用域的前端开始, 向上逐级查询与 所搜索标识符匹配的标识符 如果在局部环境中找到了该标识符
+       搜索过程停止, 变量就绪.
+       如果在局部环境中没有找到该变量名(标识符), 则继续延作用域链向上搜索, 搜索过程将一直追溯到全局环境对象,
+       如果在全局环境对象中也没有找到这个标识符 , 则意味着该变量尚未声明  example:*/
+    var name = 'long ao tian';
+
+    function getName() {
+      return name;
+    }
+    console.log(getName());
+    /* 调用本例中的函数 getName 时会引用变量name 为了确定变量name  的值, 在这个例子中 将开始两步搜索过程
+      首先搜索getName的环境对象 查找一个名为 name的标识符. 在没有找到的情况下, 继续搜索下一个的环境的变量对象(在这里是全局环境变量)
+      然后在最外层的全局环境中找到了名为 name 的标识符, 搜索过程宣告结束.*/
+    // 如过这个变量(表示符)存在与这个局部变量中, 搜索结束, 则不会进入到下一个环境中.也就是说在局部变量中存在同名的标识符, 则不会进入到下一个环境中搜索
+    // example:
+    var type = 'kawayi';
+
+    function getType() { // 调用该函数时
+      var type = 'yujie'; // type 被重新声明
+      return type + ' or ' + window.type; // 搜索标识符时 在局部环境中找到相同标识符 搜索停止
+      // 这时想访问外部环境中的变量 使用window.
+    }
+    console.log(getType());
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // Regular Expression 上的属性及方法
+    // attribute:
+    // 正则表达式的属性分为两类:
+    // 一类. 修饰符相关, 表示对应的修饰符是否设置(只读属性, 返回布尔值):
+    // > ignoreCase: 表示是否设置了 i 修饰符,
+    // > global: 表示是否设置了 g 修饰符,
+    // > multiline: 表示是否设置了 m 修饰符
+    var regex = /wds/igm;
+    console.log(regex.ignoreCase); // true
+    console.log(regex.global); // true
+    console.log(regex.multiline); // true
+
+    // 另一类与修饰符无关的:
+    // > lastIndex: 返回下一次开始搜索的位置. 该属性可读写, 但是必须是修饰了 g 时有意义
+    // > source: 返回正则表达式的字符串形式(不包括反斜杠), 该属性只读
+    var regex = /wds/igm
+    console.log(regex.lastIndex); // 默认为 0
+    console.log(regex.source); // wds
+
+    // Regular expression mothed:
+    // test(): 正则对象test 方法返回一个布尔值, 表示当前能否匹配参数字符串
+    console.log(/kitty/.test('hello kitty')); //true
+    // 上面代码用于检测字符串是否含有 kitty
+    // g: 如果含有 g 方法则每一次test 方法都从上一次结束位置开始向后匹配 下面实例:
+    var regex = /win/g;
+    var str = 'gx we win skt , win!! of msi china tema win!';
+    console.log('length: ', str.length); // length:  44
+    console.log(regex.lastIndex); // 0
+    console.log(regex.test(str)); // true
+    console.log(regex.lastIndex); // 9
+    console.log(regex.test(str)); // true
+    console.log(regex.lastIndex); // 19
+    console.log(regex.test(str)); // true
+    console.log(regex.lastIndex); // 43
+    console.log(regex.test(str)); // false
+    console.log(regex.lastIndex = 43); // 9 上面已经到最后一位, 下面再开始为 0 这里赋值9
+    console.log(regex.test(str)); // false
+    /* 上面代码使用了 g 修饰符 表示要记录搜索位置. 接着, 5 次使用test 方法, 每一次搜索位置都是从上一次匹配后的位置
+     如果匹配到返回true, 直到最后一位, 下次从 0 开始 , 设置结束位置, 可改变下一次开始索引位置
+     上面最后设置索引位置从43开始, 后面没有索引的字符串, 索引返回false*/
+    /* 注意: */
+    // lastIndex 属性 只对同一个正则表达式有效,
+    var count = 0;
+    // while (/a/g.test('babaa')) count++;
+    // 这里的 while 无线循环, 每次while循环 匹配条件都是一个新的 正则表达式, 每次lastIndex 都是 0
+    // 如果正则模式是一个空字符串, 则匹配任意字符串
+    var r = new RegExp('').test('?');
+    console.log(r); // true
+
+    // exec() 返回匹配结果, 如果发现匹配,则返回一个数组, 成员是每一个匹配成功的字符串, 未发现 返回null
+    var str = 'x_x+_+';
+    var reg1 = /x/;
+    var reg2 = /y/;
+    console.log(reg1.exec(str)); // ["x", index: 0, input: "x_x++"]
+    console.log(reg2.exec(str)); // null
+    /* 上面的代码中 reg1 匹配成功, 返回一个数组, 成员是匹配结果, 这个返回值与 string.match(RegExp)方法返回值一致
+       正则对象reg2 匹配失败, 返回null */
+
+    /* 如果正则表达试含有圆括号 即含有 (组匹配), 即返回的数组包含多个成员, 第一个成员是整个匹配成功的结果,
+      后面的成为括号中的匹配成功组, 第二个成员对应第一个括号, 以次类推. 整个数组的长度为 组匹配个数 +1 */
+    var reg3 = /_(x\+?)*(_\+)$/;
+    console.log(reg3.exec(str)); // ["_x+_+", "x+", "_+", index: 1, input: "x_x+_+"]
+    /* 上面方法返回一个数组, 第一个成员为整个表达式匹配到的, 第二个为第一个括号内的成员, 第三个为第二个括号内的成员,
+      index 匹配模式成功开始的位置, input 为整个原字符串值 */
+    // g
+    //如果正则表达式加上 g 修饰符, 则可以多次使用 exec 方法, 下一次搜索的位置从上一次匹配成功后的位置开始.
+    var reg = /a(b+)a/g;
+    var str = '_ababca_ara_aba_';
+    console.log(reg.exec(str)); // ["aba", "b", index: 1, input: "_ababca_ara_aba_"]
+    console.log(reg.lastIndex); // 4
+    console.log(reg.exec(str)); // ["aba", "b", index: 12, input: "_ababca_ara_aba_"]
+    console.log(reg.lastIndex); // 15
+    console.log(reg.exec(str)); // null
+    console.log(reg.lastIndex); // 0
+    console.log(reg.exec(str)); // ["aba", "b", index: 1, input: "_ababca_ara_aba_"]
+    console.log(reg.lastIndex); // 4
+    /* 上面代码执行了四次, 前三次是从上一次匹配结束后的位置向后匹配, 当第三次结束后, 整个字符串已经到达尾部,
+      正则对象的lastIndex 属性重置为 0 , 意味着第四次重新开始 */
+    /* 利用 g 修饰符的多次匹配的特点, 可以用一个循环完成全部匹配 */
+    while (1) {
+      var match = reg.exec(str);
+      if (!match) break;
+      console.log(match[1]);
+    }
+  </script>
+  </script>
+</body>
+
+</html>

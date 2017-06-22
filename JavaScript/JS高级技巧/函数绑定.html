@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id='my-btn'>摁扭</button>
+  <button id='my-btn1'>摁扭1</button>
+  <script>
+    /* 函数绑定要创建一个函数, 可以在特定的this 环境中 以指定参数 调用另一个函数,该技巧常常和回调函数与事件处理程序一起使用,以便在将函数作为变量传递的同时保留代码执行环境. example: */
+    var handler = {
+      message: 'Event handled',
+      handleClick: function(event) {
+        console.log(this.message);
+      }
+    };
+
+    var btn = document.getElementById('my-btn');
+    btn.addEventListener('click', handler.handleClick, false); // undefined  这里的处理函数性当于 : 'console.log(this.message);' == btn.message
+    /* 上面代码中, 创建了一个叫做 handler 的对象, handler.handleClick() 方法被分配为一个 DOM 按钮的事件处理 程序
+      当摁下按钮后, 就会调用该函数,显示一个警告框.虽然貌似应该打印显示 'Event handled' ,
+      然而实际上显示的是 undefined ,
+      这个问题在于没有保存handler.handleClick() 的环境, 所以this 对象最后指向了DOM 按钮而非 handler(在 IE8 中 this指向window为) */
+
+    // 下面将用闭包来解决这个问题:
+    btn.addEventListener('click', function(event) {
+      handler.handleClick(event); // Event handled // 这相当于 在hanler中调用 hanler.hanlerClick
+    }, false);
+    /* 这个解决方案中 onclick 事件处理程序内使用了一个闭包直接调用 handler.handleClick().
+      当然, 这是特定于这段代码的解决方案. 创建多个闭包可能会令代码变得难于可借和调试.
+      因此, 很对javascript库实现了一个可以将函数绑定到指定环境的函数. 这个函数一般都叫做bind() */
+
+    // 一个简单的 bind() 函数接受一个函数和一个环境, 并返回一个在给定环境中调用给定函数的函数, 并将所有参数原封不动的传递过去:
+    function bind(fn, context) {
+      return function() {
+        return fn.apply(context, arguments);
+      }
+    }
+    /* 在bind() 中创建了一个闭包, 闭包使用apply() 调用传入的函数, 并给 apply() 传递context 对象的参数.
+      注意其中的arguments 对象是内部函数的, 而不是bind的. 当调用返回的函数时, 他会在给定环境中执行被传入的函数并给出所有参数.
+      bind() 函数按如下方式使用: */
+    btn.addEventListener('click', bind(handler.handleClick, handler)); // Event handled
+
+    /* 下面这个例子中, 用bind() 函数创建了一个保持了执行环境的函数, 并将其传递给 btn.addEventListener
+      event 对象也被传递给了函数, 如下所示: */
+    var handler1 = {
+      message: 'Event handled',
+      handleClick: function(event) {
+        console.log(this.message + ':' + event.type);
+      }
+    };
+    var btn1 = document.getElementById('my-btn1');
+    btn1.addEventListener('click', bind(handler1.handleClick, handler1)); // Event handled:click
+    // handler.handleClick() 方法和平时一样获得了 event 对象, 因为所有的参数都通过被绑定的函数直接传递给了它
+
+    // ECMAScript5 中所有的函数定义了一个原生的bind()方法, 不用再自己定义 bind(), 可以直接使用:
+    btn1.addEventListener('click', handler1.handleClick.bind(handler1)); // Event handled:click
+
+    /* 注意:
+      原生的bind() 方法与前面介绍的自定义bind() 方法类似, 都是要传入作为 this 值的对象, 支持原生bind() 方法的浏览器: IE9+ Firefox 4+ Chrome
+    只要是将某个函数指针以值的形式进行传递, 同时该函数必须在特定环境中执行, 被绑定函数的效用就凸显出来了,
+    他们主要用于事件处理程序以及 setTimeout() 和 setInterval() 然而, 被绑定函数比普通函数开销更大, 需要内存更多, 同时也因为多重函数调用更慢一点,
+    所以要在必要时使用. */
+  </script>
+</body>
+
+</html>

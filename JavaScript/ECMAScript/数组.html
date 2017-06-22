@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+    /* 数组是有序集合,每个值就是一个元素,每个元素在数组中有一个位置,以数字表示,称为索引
+                                                                                                                                                                                                                                                                                                                                                                                                                         javascript的数组是无类型的, 数组元素可以是任意值,并且同一数组的元素可以是不同类型,但是一般不推荐*/
+    // 数组定义的三种方法
+    var cars = new Array();
+    cars[0] = '下标0';
+    cars[1] = '下标1';
+    cars[2] = '下标2';
+    console.log(cars);
+
+    // 向 Array 构造函数传入一个在 0 到 232-1 之间的整数，将返回一个以此为长度的数组对象。
+    cars = new Array(100);
+    console.log(cars.length); // 100
+
+    var cars = new Array('ECMA', 'DOM', 'BOM');
+    console.log(cars);
+
+
+    var cars = ['wu', 'dong', 'shuo', 'No.1', , ]; // 数组内可以是任意类型
+    // 发现空一个元素未填写,这被称为稀疏数组,是占内存的 其中空的为 undefined
+    console.log(cars);
+    var long = cars.length;
+    console.log(long);
+    for (var i = 0; i < long; i++) {
+      console.log(cars[0 + i]);
+    }
+
+    //  数组元素的添加 :
+    var test = [];
+    test[0] = '第一种添加方法';
+    test.push('第二种添加方法'); // 尾部添加
+    test.unshift('第三种添加方法'); // 头部添加
+    console.log('test: ', test);
+
+    //  数组元素的删除:
+    // 不会改变数组长度
+    test = new Array('索引0', '索引1', '索引2');
+    delete test[1]; // 删除索引1 的位置中内容  删除后位置为undefined
+    console.log(test); // =>["索引0", undefined × 1, "索引2"]
+
+    //会改变数组长度 删除数组末尾的一个元素
+    console.log(test.pop(), test);
+    // => 索引2, ["索引0", undefined × 1]
+
+    // 删除数组元素开头的一个元素
+    console.log(test.shift(), test);
+    // => 索引0 [undefined × 1]
+
+    // 数组元素的替换/修改
+    test = ['吴', '凯', '孙', '刘', '邵'];
+    /*
+    array.splice(start, deleteCount[,item1[,item2[,...]]]);
+    start 指定开始位置
+    deleteCount  指定删除个数
+    item 指定要添加元素
+    splice()  方法会对数组进行修改
+    */
+    console.log(test.splice(1, 1, '吴'), test); // 修改
+    // => ["凯"] , ["吴", "吴", "孙", "刘", "邵"]
+    console.log(test.splice(1, 0, '吴凯源'), test); // 添加
+    // => [] , ["吴", "吴凯源", "吴", "孙", "刘", "邵"]
+
+    // 遍历数组
+    for (var i = 0, long = test.length; i < long; i++) {
+      console.log(test[i]);
+    }
+
+    // 连接数组元素
+    console.log(test.join()); // 得到由 , 链接每个元素的字符串
+    // typeof test.join()   => String
+    // join()  默认用 , 号连接  当然可以指定. 例如:
+    console.log(test.join(''));
+    console.log(test.join('+'));
+
+
+
+    // 数组方法
+    // array.reverse()  颠倒数组元素顺序
+    test = ['last', 'center', 'first'];
+    console.log(test.reverse());
+
+    // array.sort([comparation])  这个方法返回排序后的数组, sort不传参数时, 默认按照便码比较排序
+    test = [10, 22, 7, 9, 13];
+    console.log(test.sort(function(a, b) {
+      console.log(a, b);
+      return a - b;
+    }));
+
+    // array.concat(value1, value2, value3, ....) 返回连接后的新数组
+    var a = ['wu', 'dong'];
+    var b = new Array('da', 'shuai', 'bi');
+    console.log(c = a.concat(b), c);
+    // => ["wu", "dong", "da", "shuai", "bi"]
+
+    // array.slice(start, end)  两个参数用于定义开始与结尾的位置
+    //* 若不定义结尾参数 则默认从起始到最后一位
+    console.log(c.slice(1, 3));
+    // => ["dong", "da"]
+
+    // 浅复制:
+    var d = c.slice();
+    console.log(d);
+    d[0] = '???';
+    console.log(c, d); // c数组没有被修改  d 修改
+
+    // 会影响初数组 例子1:
+    var a1 = {
+      "color": "red",
+      "name": "xiaoming"
+    };
+
+    var a2 = [a1, 2, 3, 4];
+
+    var a3 = a2.slice(0, 2);
+    a3[0].color = "green"; //slice浅复制，此处修改会影响原先的元素a1
+    console.log(a1);
+
+    // 例子2:
+    var b1 = ['w', 'd', 's', ['真', '帅']];
+
+    var b2 = b1.slice(-2);
+    console.log(b2);
+    b2[1][0] = '不';
+    console.log(b1, b2);
+
+    var b3 = b2.slice(-1);
+    console.log(b3);
+    b3[0][1] = '丑';
+    console.log(b1, b2, b3);
+
+    // 总结  在数组中的元素为数组或者对象,会进行浅复制. 而后的更改会影响初数组.
+  </script>
+</body>
+
+</html>

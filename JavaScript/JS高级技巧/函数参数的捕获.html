@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 函数中的参数是一个伪数组, 所以没有数组上的方法.这时使用call 方法, 为 数组原型链方法添加执行环境 arguments */
+    function test(fn, context) {
+      return Array.prototype.slice.call(arguments, 2); // 为slice 传递参数 2从1位向后切片
+    }
+    console.log(test(0, 1, 2, 3, 4)); // [2, 3, 4]
+
+    /* 进阶 */
+    function test2(fn, context) {
+      var arg = Array.prototype.slice.call(arguments, 2);
+      return function() {
+        var arg1 = arg.concat(Array.prototype.slice.call(arguments));
+        return arg1;
+      }
+    }
+    var one = test2(0, 1, 2, 3);
+    console.log(one(4, 5)); // [2, 3, 4, 5]
+
+    /* 实现绑定bind() */
+    function bind(fn, context) {
+      var arg1 = Array.prototype.slice.call(arguments, 2);
+      return function() {
+        var arg2 = arg1.concat(Array.prototype.slice.call(arguments)); // 拼接上面的数组
+        return fn.apply(context, arg2); // 对 fn 进行执行环境绑定在 context, 并传入数组元素 arg2
+      }
+    }
+    // 环境1 有自己的data
+    var obj = {
+      data: 'win',
+      put: function() {
+        console.log(this.data);
+        for (var i = 0, j = 0; i < arguments.length; i++) {
+          j += arguments[i];
+        }
+        return j;
+      }
+    }
+    // 环境2 有自己的data
+    var obj2 = {
+      data: 'lost'
+    }
+    var print = bind(obj.put, obj2, 8); // 使用bind 并传入参数
+    console.log(print(7, 1)); // lost  16
+  </script>
+</body>
+
+</html>

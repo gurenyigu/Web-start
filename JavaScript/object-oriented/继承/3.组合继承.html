@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 组合继承(combination inheritance), 有时也叫做伪经典继承, 指的是将原型链 和 借用构造函数 的技术组合. 发挥二者之长
+    /* 其背后的思路是使用原型链实现对原型属性和方法的继承, 而通过借用构造函数来实现对实例属性的继承.
+      这样, 不仅通过在原型上定义方法实现了函数复用,又能够保证每个实例都有他自己的属性. example: */
+
+    function SuperType(name) { // SuperType 构造函数定义了两个属性: name colors.
+      this.name = name;
+      this.colors = ['red', 'blue', 'green'];
+    }
+
+    SuperType.prototype.sayName = function() { // SuperType 的原型添加了一个 sayName 方法
+      console.log(this.name);
+    };
+
+    function SubType(name, age) {
+      // 继承属性
+      SuperType.call(this, name); // SubType 构造函数在调用 SuperType 构造函数时传入了name 参数
+
+      this.age = age; // SubType 拥有自己的属性 age
+    }
+
+    // 继承方法
+    SubType.prototype = new SuperType(); // 将SuperType的实例赋值给 SubType 的原型
+    SubType.prototype.constructor = SubType; // 修改构造函数指针为 SubType (否则是 SuperType)
+    // 添加 SubType 自己的方法
+    SubType.prototype.sayAge = function() {
+      console.log(this.age);
+    };
+
+    var instance = new SubType('wu', 20);
+    // 实例化
+    instance.colors.push('black'); // 修改这个实例化对象的属性
+    instance.sayAge();
+    instance.sayName();
+
+    var instance1 = new SubType('dong', 19);
+    console.log(instance1.colors); // ["red", "blue", "green"]
+    instance1.sayAge();
+    instance1.sayName();
+
+    /* 使用这种方法可以使 两个不同的SubType实例 拥有自己的属性(name age color) ,也可以拥有相同的方法(sayName sayAge) */
+
+    // 组合式继承避免了原型链 和 借用构造函数的缺陷, 融合了他们的优点, 成为 javascript 中最常用的继承模式, 而且instanceof  isPrototypeOf() 也能够用于识别基于组合创建的对象
+  </script>
+</body>
+
+</html>

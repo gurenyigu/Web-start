@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+    // setInterval() 运行顺序: callback => delay => callback .....=> clear
+    // setInterval(callback, delay) callback 每次执行的函数 / 或者包含javascript的字符串  , delay  延时时间
+    var time1 = setInterval("console.log('执行一次')", 1000); // 没一秒执行一次console
+    function con() {
+      console.log('执行二次!');
+    }
+    var time2 = setInterval(con, 1000);
+    setTimeout(function() { // 定义延时函数
+      clearInterval(time1); // 清除上一个定时器 需要定时器的返回值!
+      clearInterval(time2);
+    }, 4000); // setTimeout  运行4s 后执行清除定时器操作
+    // 执行上两种方法虽然都可以,但是由于字符串传递可能导致损失, 因此不建议字符串作为第一个参数
+
+    /* 第二个参数是一个表示等待多长时间的毫秒数, 但是经过该时间后指定的代码不一定会执行.:
+      javascript 是一个单线程的解释器, 因此一定时间内只能执行一段代码. 为了控制执行的代码,
+      就有一个javascript 任务队列,这些任务会按照将他们添加到队列的顺序执行!
+      setTimeout()的第二个参数告诉javascript再过多长时间把当前任务添加到队列中.如果队列是空的,
+      那么添加的代码会立即执行, 如果队列不是空的, 那么他就要等前面的代码执行文了以后再执行*/
+
+    // setTimeout() 运行顺序: delay => callback => stop
+    // setTimeout(callback, delay) 间隔delay 毫秒后执行函数, calback 并且只执行一次
+    /* 调用setTimeout()后,该方法返回一个数值Id,(与setInterval一致)这个超时调用ID是计划执行代码的唯一标识符.
+       可以通过它取消超时调用, 要取消尚未执行的超时调用计划,可以调用 clearTimeout() 并将ID作为参数,传递给它
+        只要是在指定时间尚未过去之前调用clearTimeout(),就可以完全取消超时调用.*/
+
+    //  这些代码都是在全局作用域下执行的, 因此函数中this的值在非严格模式下指向window对象,严格模式下是undefined
+
+    // 取消间歇调用远比取消超时调用重要的多, 因为在不干涉的情况下, 间歇调用会一直执行到页面卸载,例子:
+    var num = 0;
+    var max = 10;
+    var intervalid = null;
+
+    function incrementNumber() {
+      num++;
+      if (num == max) {
+        clearInterval(intervalid);
+        console.log('执行完成');
+      }
+    }
+    intervalid = setInterval(incrementNumber, 500);
+
+    // 上面的例子中通过间歇调用 每半秒num递增一次, 当5秒后, 取消间歇调用, 但是它也可以通过超时调用实现:
+
+    function outcrementNumber() {
+      if (num < max) {
+        setTimeout(outcrementNumber, 500);
+      } else {
+        console.log('5秒结束');
+      }
+    }
+    setTimeout(outcrementNumber, 500);
+    /* 由此可见 同样的功能超时调用可以代替间歇调用,而且有约束的情况下不调用超时调用就会自动停止.
+        一般认为使用超时调用代替间歇调用是一种最佳模式, 在开发环境下,甚少使用真正的间歇调用,
+        因为后一个间歇调用可能会在前一个间歇调用结束前启动, 而像前面实例中那样超时调用, 而可以完全避免这一点.
+        所以最好不要使用间歇调用*/
+  </script>
+</body>
+
+</html>

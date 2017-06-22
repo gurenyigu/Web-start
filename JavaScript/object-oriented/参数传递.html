@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 参数传递
+    /* ECMAScript 中所有函数的参数传递都是按 值 传递的,也就是说: 把函数外部的值 复制给函数内部的参数,
+      就像把值从一个变量复制到另一个变量一样. 基本类型 的值的传递如同基本类型变量复制一致
+      而 引用类型的传递, 则如同引用类型变量的复制一样. */
+
+    // 传递基本类型时, 被传递的值会被复制给一个局部变量(即函数的参数, 在ECMAScript中的 arguments对象中的一个元素)
+    // 传递引用类型时, 会把这个值在内存中的 地址 复制给一个局部变量,因此这个局部变量的变化会反映在函数的外部.
+    function addNum(num) { // addNum 函数有一个参数 num, 这个参数是函数局部的变量.
+      num += 10; // 函数中 将 num 增加10 这一变化不会影响外部的变量 count
+      return num; // 返回的值为 12 反映这个函数的内部变化
+    }
+    var count = 2;
+    var result = addNum(count); // 调用addNum 时 将变量 count 作为参数 传递给函数
+    // 这个变量的值为20 于是20 被复制给 参数 num 以便在 addNum中使用
+    console.log(count, result);
+    // 以上就是 基本类型传递参数
+
+    function setName(obj) { // 在这个函数内部 obj 与 person 引用的是同一个对象 均指向堆中相同的地址
+      obj.name = 'bili'; // 于是在函数内部为obj 添加name 属性后, 外部的 person 也会变化.
+    }
+    var person = new Object(); // 创建一个对象  将其保存在person 变量中
+    setName(person); // 调用中 将这个变量传递到 setName 函数中, 被复制给了obj
+    console.log(person.name); // 这也证明了参数是按照引用传递的
+
+    function setType(obj) {
+      obj.type = 'kitty'; // 将参数 type 属性设置 为kitty
+      console.log(obj);
+      // var objIn = obj;
+      obj = new Object(); // 再将一个新的对象赋值给 obj
+      obj.type = 'Tom'; // 再将其的 type 设置为 'Tom'  这里函数内部重写 obj时 这个变量引用就是一个局部对象了
+      console.log(obj); // 对象上绑定的属性值为 'Tom'
+      // 函数执行完毕后就会销毁这个新的obj 对象
+      // console.log(objIn === obj); // false
+    }
+    var animal = new Object();
+    setType(animal); // 将对象 animal 传递给函数setType 的参数
+    console.log(animal.type); // kitty
+    console.log(animal); // 所以 animal 只剩下了函数obj第一次type的赋值
+  </script>
+</body>
+
+</html>

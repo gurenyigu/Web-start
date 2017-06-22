@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 创建一个日期对象
+    var d = new Date();
+
+    // 日期常用方法
+    console.log(d.getFullYear() + '年', d.getMonth() + 1 + '月', d.getDate() + '日', '星期' + d.getDay());
+    // 2017年 5月 22日 星期1     getMonth() 的范围为 0-11
+    console.log(d.getHours() + '时', d.getMinutes() + '分', d.getSeconds() + '秒', d.getMilliseconds() + '毫秒');
+    // 20时 14分 36秒 346毫秒
+    console.log(d.getTime());
+    // 1495455317530  返回从 1970/1/1 午夜 累计毫秒数
+
+
+    // 综合设置:
+    console.log(d.toDateString());
+    // Mon May 22 2017  显示星期 月 日 年
+    console.log(d.toTimeString());
+    // 20:18:58 GMT+0800 (CST) 显示 时分秒\时区
+    console.log(d.toLocaleDateString());
+    // 2017/5/22  本地化的显示方法
+    console.log(d.toLocaleTimeString());
+    // 下午8:27:12 本地化的时间显示方法
+    console.log(d.toUTCString());
+    // Mon, 22 May 2017 12:28:38 GMT 完整格式的 UTC日期
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 在解决原型中包含引用类型值所带来问题的过程中,开发人员开始使用一种叫做 借用构造函数(constructor stealing)的技术(也被成为 伪造对象 或 经典继承)
+    // 这种技术的基本思想: 在 Sub 构造函数的内部调用 Super 构造函数. 记住: 函数只不过是在特定环境中执行代码的对象,
+    // 因此 通过使用 apply() call() 方法也可以在新创建的对象上执行构造函数 example:
+
+    function SuperType() {
+      this.colors = ['red', 'blue', 'green'];
+    }
+
+    function SubType() {
+      // 继承 SuperType
+      SuperType.call(this);
+    }
+
+    var instance = new SubType();
+    instance.colors.push('black');
+    console.log(instance.colors); // ["red", "blue", "green", "black"]
+
+    var instance1 = new SubType();
+    console.log(instance1.colors); // ["red", "blue", "green"]
+
+    console.log(instance, instance1);
+
+    /* 这里的继承 '借调' 了SuperType的构造函数.通过使用call()方法(或者apply()方法也可以), 我们实际上是在新创建的SubType实例的环境下调用了 SuperType 构造函数
+      这样就会在 SubType 对象上执行 SuperType() 函数中定义的所有对象初始化代码. 结果 SubType 的每个实例就会具有自己的 colors 属性的副本了 */
+
+    // 1.传递参数
+    /* 相对于原型链而言, 借用构造函数有一个很大的优势, 即可以在 SubType 构造函数中 向 SuperType 构造函数中传递参数 Example: */
+    function SuperT(name) {
+      this.name = name;
+    }
+
+    function SubT() {
+      // 继承了 SuperType, 同时还传递了参数
+      SuperT.call(this, 'nico');
+
+      // 实例属性
+      this.age = 23;
+    }
+
+    var instance3 = new SubT();
+    console.log(instance3.name); // nico
+    console.log(instance3.age); // 23
+    /* 以上代码中的 SuperT 只接受一个参数name, 该参数会直接赋给一个属性.SubT 构造函数内部调用 SuperT 构造函数时,
+      实际上是为了 SubT 的实例设置了 name 属性. 为了确保 SuperT 构造函数不会重写 SubT 的属性, 可以在调用 SuperT 构造函数后,
+      再添加应该在SubT 定义的属性 */
+
+    // 2.借用构造函数的问题
+    /* 仅仅是借用构造函数, 也无法避免构造函数模式 存在的问题 ----- 方法都在构造函数中定义, 因此函数复用就无从谈起,
+      而且在 SuperT 原型中定义的方法, 对于 SubT 而言也是不可见的,结果所有类型都只能使用构造函数模式. 所以构造函数模式也很少单独使用 */
+  </script>
+</body>
+
+</html>

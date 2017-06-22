@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 稳妥的构造函数模式
+    /* Douglas Crockford 发明了 JavaScript 中的稳妥对象(durable objects) 这个概念.
+      所谓的稳妥对象, 值的是没有公共属性, 而且方法也不引用this 的对象. 稳妥的对象最适合在一些安全的环境中(这些环境中会禁止使用 this new)
+      ,或者在防止数据被其他应用程序(如Mashup程序)改动时 使用. 稳妥构造函数遵循与寄生构造函数类似的模式, 但是有两点不同:
+      一是 新创建对象的实例方法不引用this 二是 不使用new 操作符调用构造函数. 按照稳妥构造函数的要求,
+      可以将前面的 Person构造函数如下重写: */
+
+    function Person(name, age, job) {
+      //创建要返回的对象
+      var o = new Object();
+
+      // 这里可以定义私有变量和函数
+
+      // 添加方法
+      o.sayName = function() {
+        console.log(name);
+      };
+
+      // 返回对象
+      return o;
+    }
+
+    // 注意, 在以下这种模式创建的对象中, 除了使用sayName() 方法之外, 没有其他方法访问 name 的值. 可以像下面这样,稳妥的使用 Person 构造函数
+
+    var friend = Person('nico', 10, 'Engineer');
+    console.log(friend);
+    friend.sayName(); // nico
+    /* 像这样, 变量 friend 中保存的是一个稳妥对象, 而除了调用 sayName() 方法之外, 没有其他方法可以访问其数据成员.
+      即使有其他代码会给这个对象添加方法 或者 数据成员, 但也不可能有别的方法访问传入到构造函数中的原始数据.
+      稳妥构造函数提供的这种安全性, 使得他非常适合某些安全执行环境 */
+
+    /* 与寄生构造函数模式相似, 使用稳妥构造函数模式创建的对象与构造函数之间也没有什么关系.
+      因此, instanceof 操作符对这种对象也没什么意义 */
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 正则表达式: (RegExp, regular expression)是一种表达文本模式的方法. 常用作给定文本匹配模式的工具
+                                         example: */
+    // 定义创建一个正则表达式有两种方法:
+    var regex = /wds/;
+    // or
+    var regex = new RegExp('wds');
+    /* 这两种方式等价, 都新建了一个内容为 wds 的正则表达式对象.
+      主要区别: 第一种采用字面量方法在编译时新建正则表达式, 第二种采用构造函数方法在运行时新建正则表达式*/
+
+    // RegExp构造函数还以可接收第二个参数, 表示: 修饰符 example:
+    var regex = new RegExp('wds', 'i');
+    // 等价于:
+    var regex = /wds/i;
+    /* 这两种写法在运行时有区别: 采用字面量写法,正则对象在代码载入时(即编译时)生成;
+      采用构造函数方法, 正则对象在代码运行时生成. 考虑到从实际应用和直观上, 一般采用字面量写法 */
+
+    // 存在字符串和正则后, 有两种方法使用:
+    // >正则对象的方法: 将字符串作为参数. example:
+    console.log(regex.test('love wds')); // true
+    // >字符串对象的方法: 将正则对象作为参数. example:
+    var str = 'wds not love me';
+    console.log(str.match(regex)); // ["wds", index: 0, input: "wds not love me"]
+    // 具体后面的文档介绍
+  </script>
+</body>
+
+</html>
+ml>

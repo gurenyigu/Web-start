@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <div id='box'>
+    <p id='li' class='list'>
+      p 的内
+      <i id='i'>title</i>
+      <a href="" id='a'>text</a>
+    </p>
+  </div>
+
+  <script>
+    document.write('<h1>这个添加的内容如果在 文档加载完 后添加,则会覆盖所有文档</h1>');
+  </script>
+  <button onclick='overlay()'>覆盖内容</button>
+  <hr>
+  <p id="write">这个p标签里的内容将被修改.</p>
+  <button onclick='inner()'>修改内容</button>
+  <script>
+    /*DOM 为文档提供了结构化表示, 并定义了如歌通过脚本访问文档各部分
+        整个文档就是一个倒置的数, 根部为文档 document
+        Node 节点:
+          真个文档由节点构成, 每种节点都有一个 nodeType 属性, 用于表明节点的类型.节点类型为12种, 每种由一个1 - 12 的
+        数字表示:
+          node.Element_node..................1
+        node.Attribute_node................2
+        node.Text_node.....................3
+        node.Cdata_Section_node............4
+        node.Entity_Reference_node.........5
+        node.Entity_node...................6
+        node.Processing_Instruction_node...7
+        node.Comment_node..................8
+        noce.Document_node.................9
+        node.Document_Type_node............10
+        node.Document.Fragment_node........11
+        node.Notation_node.................12
+
+        获得文档节点(9) 的方法
+        document.getElementById('id');
+        document.getElementsByClassName('class');
+        document.getElementsByTagName('div');
+
+        // 新的方法  兼容高版本浏览器  IE 9以上
+        document.querySelector('#id' / '#class' / 'tag');
+        */
+
+    // DOM 关系节点访问方法  只能通过元素获取  class 与 pag 获取到的是数组!
+    // 关系:
+    var box = document.getElementById('box');
+    // 子节点:
+    console.log(box.children); // children 用于获取document,只有标签被获取
+    console.log(box.childNodes); // childNodes 用于获取node节点 不分类型
+
+    // 父节点:
+    var list = document.getElementsByClassName('list');
+    var li = document.getElementById('li');
+    console.log(li.parentNode); // 获得父节点的整个作用域
+    console.log(list[0].parentNode); // class 数组获取到元素
+
+    // 兄弟节点:
+    // obj.nextSibling  obj.perviousSibling    IE 8以下写法
+    // obj.nextElementSibling  obj.perviousSibling  高版本方法
+    var a = document.getElementsByTagName('a');
+    var a2 = document.getElementById('a');
+    var i = document.getElementById('i');
+    console.log(i.nextElementSibling);
+    console.log(a[0].nextElementSibling); // null 没有下一个元素
+    console.log(a2.previousElementSibling);
+    console.log(i.previousElementSibling); // 没有上一个兄弟  null
+
+    // first / last  节点
+    // firstChild  lastChild  IE 8以下写法
+    // firstElementChild  lastElementChild  高版本写法
+    console.log(li.firstElementChild || li.firstChild);
+    console.log(li.lastElementChild || li.lastChild);
+
+    /* -------------------------------节点操作------------------------------------ */
+
+    // 创建一个节点:
+    // 原生:
+    console.log(document.createElement('div'));
+    // jquery:
+    // console.log($('<div></div>'));
+
+    // 添加节点
+    var Elem = document.createElement('a');
+    li.appendChild(Elem); // 该节点会添加到对象的字节点的最后一个
+    var span = document.createElement('span');
+    li.insertBefore(span, li.firstElementChild);
+    // 在什么元素之前插入.span依然是 li 的子元素 但是可以选择在哪个元素之前插入
+    // 如果 insertBefore 的最后一个参数传入 null 则与 appendChild 方法相同
+
+    // 删除节点
+    var a = li.lastElementChild;
+    console.log(li.removeChild(a));
+
+    //节点的拷贝
+    console.log(li.cloneNode(true));
+    console.log(li.cloneNode(false));
+    // 该方法返回节点本身的副本, 参数为true 拷贝所有的子节点, 参数为false 仅仅拷贝当前节点本身
+
+    // 例如:
+    var overlay = function() {
+      console.log(example);
+      document.write('<h2>这个内容将覆盖当前文档.</h2>');
+    }
+
+    // 修改HTML内容
+    var example = document.getElementById('write');
+
+    function inner() {
+      example.innerHTML = '对文档进行修改';
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <input type='text' id='input' />
+  <button id="verification" onclick='verify()'>点击验证是否为数字</button>
+  <script>
+    var verification = document.getElementById('input');
+
+    function verify() {
+      console.log(verification);
+      console.log(verification.value);
+      if (verification.value == '' || isNaN(verification.value)) {
+        alert('这TM不是数字!');
+      }
+    }
+  </script>
+</body>
+
+</html>

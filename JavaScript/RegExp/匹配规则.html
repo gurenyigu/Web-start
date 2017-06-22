@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /*********************字面量子符 与 元字符***********************/
+    /* 大部分字符在正则表达式中, 就是字面的含义, 如 /a/ 表示匹配 a. 向这种在正则表达式中表示它的字面含义,
+       那么就是字面量字符(literal characters) */
+
+    /* 除了字面量字符以外, 还有一部分字符有着特殊的含义, 不代表字面的意思, 他们叫做元字符(meta characters)
+      主要有: */
+    /********* 点字符( . )**********/
+    // 匹配范围: 除了 回车(\r) 换行(\n) 分隔符(\u2028) 段分隔符(\u2029) 这四种以外的所有字符
+
+    /*********** 位置字符(^ $) *******/
+    /* 主要用于提示字符所处的位置, 主要有两个:
+        > ( ^ ) 表示字符串开始位置
+        > ( $ ) 表示字符串结束位置*/
+
+    /*******选择符( | )*******/
+    // 在正则表达式中表示'或关系' , 即 /me|you/  匹配 'me' or 'you';
+    // 匹配 多个内容也可以  /me|you|other/
+    // 但是, /ab|cd/ 指的是匹配 ab 或者 cd ,想匹配 b 或者 c 的话, 需要这样操作
+    console.log(/a(b|c)d/.test('abd')); // true
+
+    /************** 转义符 ***************/
+    // 正则表达式中那些有特殊含义的字符, 如果要匹配他们本身, 就需要在他们前面要加上反斜杠:
+    // 正则表达式中需要用斜杠转意的一共有12个字符: (^ . [ $ ( ) | * + ? { \\),
+    // 注意, 使用RegExp 方法生成正则对象, 转意需要使用两个斜杠, 因为字符串内部会先转意一次 example:
+    console.log((new RegExp('1\+1')).test('1+1')); // false
+    console.log((new RegExp('1\\+1')).test('1+1')); // true
+    // RegExp作为构造函数, 参数是一个字符串, 但是在字符串内部,反斜杠也是转义字符, 所以他先回被反斜杠转义一次,因此需要两个反斜杠转义
+
+
+    // 特殊字符
+    // 正则表达式不能对一些不能打印的特殊字符, 提供了表达方法
+    // > \cX 表示 Ctrl-[x], 其中 x 是A-Z中任意的一个英文字符, 用来匹配控制字符.
+    // > [\b] 匹配退格键(U+008), 不要与\b混淆
+    // > \n 匹配换行键
+    // > \r 匹配回车键
+    // > \t 匹配制表符 Tab(U+0009)
+    // > \v 匹配垂直制表符 (U+000B)
+    // > \f 匹配换页符 (U+000C)
+    // > \0 匹配null字符 (U+0000)
+    // > \xhh 匹配一个以两位十六进制数(\x00 - \xFF)表示的字符
+    // > \uhhhh 匹配一个以四位十六进制数 (\u0000 - \uFFFF) 表示的unicode 字符
+
+
+    // 字符类
+    /* 字符类(class) 表示有一系列字符可供选择,只要匹配其中一个既可以了. 所有可供选择的字符都放在方括号内,
+      比如: [xyz]表示 x y z 之中任选一个匹配 */
+    console.log(/[abc]/.test('hello world')); // false
+    console.log(/[abc]/.test('apple')); // true
+    // 上面代码表示, 字符串 'hello world' 不包含a b c中任意一个, 而字符串 'apple' 包含字符a
+
+    // 两个字符在字符类有特殊的含义
+
+    // (1) 脱字符 (^)
+    // 如果方括号内的第一个字符是[^], 则表示除了字符类之中的字符, 其他字符都可以匹配, example:
+    console.log(/[^abc]/.test('hello word')); // true
+    console.log(/[^abc]/.test('bbcd')); // true
+    /* 上面代码中, 字符串 'hello world' 中不包含abc任意一个 所以返回 true  */
+    /* 如果方括号内没有其他字符, 只有[^], 就表示匹配一切字符, 其中包括换行符.
+      注意: ('.') 点的匹配不包含换行符 */
+    var str = 'Please yes\nmake my day!';
+    console.log(str.match(/yes.*day/)); // null
+    console.log(str.match(/yes[^]*day/)); // ["yes↵make my day", index: 7, input: "Please yes↵make my day!"]
+    /* 上面代码中,字符串 s 含有一个[\n]换行符, [.]点号不包括换行符, 所以第一个正则表达式无法匹配完全,
+      第二个正则表达式[^]包含 一切 字符 */
+    // 脱字符只有在字符类的首位才有意义, 否则就是字面意思
+
+    // (2) 连子符 (-)
+    /* 某些情况下, 对于连续序列的字符, 连字符(-)用来提供简写形式, 表示字符的连续范围.
+      比如: [abc] 可以写为 [a-c], [1234567890] 可以写为 [0-9], 同理 [A-Z]表示26个大写字母 */
+    console.log(/a-z/.test('b')); // false
+    console.log(/[a-z]/.test('b')); // true
+    /* 上面代码还总, 当连字号[-]不出现在 [ ] 内中, 就不具备简写作用,只表示字面含义,所以不匹配字符 b. 只有当连字号在 [ ] 中, 才表示连续的字符 */
+    // 以下都是合法的字符类简写形式:
+    // [0-9.,] [0-9a-fA-F] [a-zA-Z0-9-] [1-31](只表示 1-3)
+    // 注意: 字符类的连字符必须在头尾两个字符中间, 才有特殊含义,否则就是字面含义.比如: [-9] 表示匹配9与- 而不是 0-9
+    // 连字符还可以用来指定: Unicode 字符的范围
+    var str = '\u0130\u0131\u0132';
+    console.log(/[\u0128-\uFFFF]/.test(str)); // true
+    /* 注意, 不要过分使用连字符, 设定一个很大的范围,否则很可能选中意料之外的字符. 最典型的例子就是[A-z],
+      表面上它是选中从大写的A到小写的z之间52个字母, 但是
+      由于在AScii编码中, 大写字母与小写字母之间还有其他字符, 结果就会出现意料之外的结果 */
+    console.log(/[A-z]/.test('\\')); // true
+    // 上面代码中, 由于反斜杠(\)的AScii码在大小写字母之间, 结果就会被选中, (两个斜杠是因为字符串中存在转义, 上面有提到)
+
+
+    // 预设定模式
+    //预设定模式指的是某些常见模式的简写方式:
+    // > \d 匹配 0-9 之间的任意一个数字 === [0-9]
+    // > \D 匹配所有 0-9 以外的字符, === [^0-9]
+    // > \w 匹配任意字母, 数字, 下划线. === [A-Za-z0-9_]
+    // > \W 匹配所有非 字母, 数字, 下划线 === [^A-Za-z0-9_]
+    // > \s 匹配空格(包括制表符, 空格符, 断行符等) === [\t\r\n\v\f]
+    // > \S 匹配非空格(包括制表符, 空格符, 断行符) === [^\t\r\n\v\f]
+    // > \b 匹配词的边界
+    // > \B 匹配非词边界, 即 在词的内部
+
+    // example:
+    // \s
+    console.log(/\s\w*/.exec('hello world')); // [" world", index: 5, input: "hello world"]
+    // \b
+    console.log(/\bworld/.exec('hello world')); // ["world", index: 6, input: "hello world"]
+    console.log(/\bworld/.exec('hello-world')); // ["world", index: 6, input: "hello-world"]
+    console.log(/\bworld/.exec('helloworld')); // null
+    // \B
+    console.log(/\Bworld/.exec('hello-world')); // null
+    console.log(/\Bworld/.exec('helloworld')); // ["world", index: 5, input: "helloworld"]
+    /* '\s\w*' 在其中捕获了空格及若干\w
+        \b 表示词的开始边界 索引必须是以\b + 'xxx' 开始的才可以匹配
+        \B 同理,只有\B + 'xxx' 不是首词独立 才匹配 */
+    // 通常, 正则表达式遇到 换行符\n 就会停止匹配
+    var html = '<b>hello</b>\n<i>world!</i>';
+    console.log(/.*/.exec(html)); // ["<b>hello</b>", index: 0, input: "<b>hello</b>↵<i>world!</i>"]
+    /* 上面代码中, 字符串html 中包含一个换行符, 结果点字符(.)不匹配换行符 */
+    // 一切字符匹配
+    console.log(/[\S\s]*/.exec(html)); // ["<b>hello</b>↵<i>world!</i>", index: 0, input: "<b>hello</b>↵<i>world!</i>"]
+    // 非捕获组
+    console.log(/(?:.|\s)*/.exec(html)); // ["<b>hello</b>↵<i>world!</i>", index: 0, input: "<b>hello</b>↵<i>world!</i>"]
+
+
+    // 重复类
+    /* 模式的精确匹配次数, 使用大括号({})表示,
+      {n}表示恰好重复n次,
+      {n,}表示至少重复 N 次,
+      {n,m} 表示至至少重复n次, 不多于m次 */
+    console.log(/lo{2}k/.test('look')); // true
+    console.log(/lo{2,5}k/.test('loook')); // true
+    /* 上面第一个代码指定o 重复的次数必须是2次, 第二行代码表示必须重复>=2次 */
+
+
+    // 量次符:
+    // 量词符用来设定某个模式出现的次数
+    // > ? 问号表示某个模式出现0次 或 1次 === {0, 1}
+    // > * 星号表示某个模式出现0次 或0次以上 === {0,}
+    // > + 加号表示某个模式出现1次>=1以上, === {1,}
+
+    // 模式或字符 出现0次或1次
+    console.log(/t?est/.test('test')); // true
+    console.log(/\w?/.exec('w123')); // ["w", index: 0, input: "w123"]
+    // 模式或字符出现一次过多次
+    console.log(/t+/.test('ttest')); // true
+    console.log(/t+/.test('es')); // false
+    // 这里是贪婪模式, 下面详细说明
+    console.log(/\w+/.exec('w123')); // ["w123", index: 0, input: "w123"]
+    // 模式或字符出现任意次数
+    console.log(/t*/.test('1234')); // true
+    // 贪婪匹配
+    console.log(/\w*/.exec('wwww1')); // ["wwww1", index: 0, input: "wwww1"]
+
+
+    // 贪婪模式
+    /* 上一小结的三个量词符, 默认情况下都是最大可能的匹配, 即匹配到下一个字符无法匹配为止, 被称为贪婪模式: */
+    var s = 'aaaa';
+    console.log(s.match(/a+/)); // ["aaaa", index: 0, input: "aaaa"]
+    // 如上代码中, 模式是 /a+/, 表示匹配1个或多个a,  因为默认为贪婪模式, 所以匹配到a 不出现为止, 所以是 4个a
+    // 非贪婪模式 一但满足条件, 就不再向下匹配
+    console.log(s.match(/a+?/)); // ["a", index: 0, input: "aaaa"]
+    // 默认 + 为贪婪匹配 下面有两种非贪婪匹配:
+    // > *? 表示匹配模式出现0次或者多次, 匹配时采用非贪婪模式
+    // > +? 表示匹配模式出现1次或多次, 匹配时采用非贪婪模式
+    console.log(s.match(/a+?/), s.match(/a*?/)); // ["a", index: 0, input: "aaaa"] ["", index: 0, input: "aaaa"]
+    // 前者至少匹配一次, 后者非贪婪的匹配了 0 次
+
+
+    // 修饰符:
+    /* 修饰符(modifier) 表示模式的附加规则, 放在正则表达式的最末尾
+       (修饰符可以单个使用, 也可以一起使用)example: */
+    var Regex = /test/i;
+    var Regex = /test/ig;
+    // (1) g修饰符
+    /* 默认情况下, 第一次匹配成功后,正则对象就停止向下继续匹配了, g 修饰符表示全局匹配(global)
+      加上它之后, 正则对象将匹配全部符合条件的结果, 主要用于搜索和替换 example: */
+    var regex = /b/;
+    var str = 'abba';
+    console.log(regex.test(str), regex.test(str), regex.test(str)); // true true true
+    // 上面代码三次输出均为 true 因为三次都是匹配第一个b 匹配了三次
+    var regexg = /b/g;
+    console.log(regexg.test(str), regexg.test(str), regexg.test(str)); // true true false
+    // 这一次的输出存在一次false 因为加入了 g 修饰符, 前两次将字符串中的 b 匹配完后, 最后已经没有 b 所以返回 false
+
+    // (2) i修饰符
+    // 默认情况下, 正则对象区分字母大小写, 加上 i 修饰符以后表示忽略大小写(ignorecase)
+    console.log(/abc/.test('ABC')); // false
+    console.log(/abc/i.test('ABC')); // true
+    // 忽略大小写实例
+
+    // (3) m修饰符
+    /* m 修饰符表示多行模式(multline), 会修改^和$行为. 默认情况下(即不加m修饰符时),
+      ^和$匹配字符串的开始处和结尾初,加上m修饰符以后, ^和$还会匹配行首和行尾,
+      即^和$会识别换行符(\n) */
+    // 没有m 不识别换行符 所以只匹配到最后
+    console.log(/\w*$/.exec('hello world\nwds one')); // ["one", index: 16, input: "hello world↵wds one"]
+    // 有 m ^/$就会识别换行符 下面代码匹配某行的结尾
+    console.log(/\w*$/m.exec('hello world\nwds one')); // ["world", index: 6, input: "hello world↵wds one"]
+    // 亦可以匹配某行行首
+    console.log(/^b/m.test('a\nb'));
+
+
+    // 组匹配
+    //(1) 概述
+    // 正则表达式的括号表示分组匹配, 括号内的模式可以用来决定匹配的分组内容
+    console.log(/fred+/.exec('fredd')); // ["fredd", index: 0, input: "fredd"]
+    console.log(/(fred)+?/.exec('fredfred')); // ["fred", "fred", index: 0, input: "fredfred"]
+    // 上面代码中, 第一个模式没有括号, 结果+只表示重复字母d, 第二个模式有括号, 结果+?(懒惰匹配) 就表示匹配fred 这个词
+    var m = 'abcabc'.match(/(.)b(.)/);
+    console.log(m); // ["abc", "a", "c", index: 0, input: "abcabc"]
+    // 上面代码中, 正则表达式/(.)b(.)/ 一共使用了两个括号, 第一个 捕获 a , 第二个 捕获 c
+    // 注意: 使用组匹配时, 不宜 使用 g 修饰符, 否则 match 方法不会捕获分组内容: 例如上面使用 g , 捕获['abc', 'abc']
+
+    // 正则表达式内部, 可以使用\n(n代表从1开始的自然数)引用括号匹配的内容, 数字表示对应的括号
+    console.log(/(.)b(.)\1b\2/.test('abcabc')); // true
+    // 上面的代码中, \1 表示前一个括号匹配的内容, \2 表示第二个括号内匹配的内容 ,若匹配错误 返回 false
+    // example:
+    console.log(/y(..)(.)\2\1/.test('yabccab')); // true
+    // 上面代码中, (..) 匹配到 'ab', (.) 匹配到 'c', 所以\2必须匹配到 'c' \1 匹配到 'ab' 才返回true
+    // 亦可以嵌套括号:
+    console.log(/y((..)\2)\1/.test('yabababab')); // true
+    // 上面代码中, \1 指外层括号, \2 只内层括号 , 组匹配结果为: 第一组: abab 第二组: ab 也就是 : y((ab)ab)abab
+
+    // 组匹配应用, 下面是一个匹配网页标签的例子:
+    var tagName = /<([^>]+)>[^<]*<\/\1>/;
+    console.log(tagName.exec('<strong>加粗的我</strong>')[1]); // strong
+    // 上面代码中, ()内匹配非> 的字符, 闭标签中直接使用 \1 表示, 很方便
+    // 进阶:
+    var html = "<b class='navbar'>Hello</b>\n<i>world</i>";
+    var tag = /<(\w+)([^>]*)>(.*?)<\/\1>/g;
+
+    var match = tag.exec(html);
+    console.log(match[1]); // 'b'
+    console.log(match[2]); //  class='navbar'
+    console.log(match[3]); // Hello
+
+    match = tag.exec(html);
+    console.log(match[1]); // i
+    console.log(match[2]); // 空
+    console.log(match[3]); // world
+
+
+    // (2) 非捕获组
+    // (?:x) 称为非捕获组(Non-capturing group), 表示不返回该组匹配的内容, 即匹配的结果中不计入这个括号
+    /* 非捕获组的作用请考虑这样一个场景: 假设要匹配foo 或者 foofoo, 正则表达式就应该写成 /(foo){1, 2}/,
+      但是这样会占用一个组匹配. 这时就可以使用非捕获组, 将正则表达式改为/(?:foo){1, 2}/, 他的作用与前一个正则是一样的
+      但是不会单独返回括号中的内容, example: */
+    var m = 'abc'.match(/(?:.)b(.)/);
+    console.log(m); // ["abc", "c", index: 0, input: "abc"]
+    // 上面代码中的模式, 一共使用了两个括号, 其中第一个括号为非捕获组, 所以最后返回的结果中不包含第一个括号, 只有第二个括号匹配的内容
+
+    // 下面用来分解网址的表达式:
+    var url = /(https|ftp):\/\/([^/\r\n]+)(\/[^\r\n]*)?/;
+    console.log(url.exec('https://baidu.com/search=?110')); // ["https://baidu.com/", "https", "baidu.com", "/", index: 0, input: "https://baidu.com/"]
+    // 非捕获匹配组:
+    var url = /(?:https|ftp):\/\/([^/\r\n]+)(\/[^\r\n]*)?/;
+    console.log(url.exec('https://google.com/')); // ["https://google.com/", "google.com", "/", index: 0, input: "https://google.com/"]
+    // 上面代码中, 前一个正则表达式是正常匹配, 第一个括号返回网络协议；后一个正则表达式是非捕获匹配, 返回结果中不包括网络协议.
+
+
+    // (3) 先行断言
+    /* x(?=y) 成为先行断言(Positive look-ahead), x只有在y前面才匹配, y不会被计入返回结果,
+      比如, 要匹配后面跟着百分号的数字, 可以写成 /\d+(?=%)/ */
+    console.log('abc'.match(/b(?=c)/)); // ["b", index: 1, input: "abc"]
+    // 上面代码中, b 在 c 前面才会被匹配, 但是括号对应的 c 内容不会被返回
+    console.log(/Jack (?=Sprat|Frost)/.test('Jack Frost')); // true
+
+
+    // (4) 先行否定断言
+    /* x(?!y) 称为先行否定断言(Negative look-ahead), x 只有不再 y 前面时才匹配, y 不会被计入返回结果.
+      比如: 要匹配后面跟的是不是百分号的数字, 就要写为: /\d+(?!%)/ */
+    console.log(/\d+(?!\.)/.exec('3.14')); // ["14", index: 2, input: "3.14"]
+    // 上面代码中, 正则表达式指定, 只有不在小数点前面的 才匹配, 所以 14 为匹配结果
+    // 先行否定断言中, 括号里的内容不会被返回
+    console.log('abd'.match(/b(?!c)/)); // ["b", index: 1, input: "abd"]
+    // 上面的代码中使用了先行否定断言, b 不再 c 前面, 所以被匹配, 而且括号对应的 d 不会被返回
+  </script>
+</body>
+
+</html>
+
+
+</html>

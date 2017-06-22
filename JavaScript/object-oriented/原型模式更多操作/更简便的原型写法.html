@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 更简便的原型语法:
+    /* 前面每个原型上的属性和方法都要加上: Person.prototype
+      为了减少不必要的输入, 也为了从视觉上更好的封装原型的功能, 更常见的做法是用一个包含所有属性和方法的对象字面量来重写原型对象: */
+    function Person() {}
+
+    Person.prototype = {
+      name: 'nico',
+      age: 34,
+      job: 'Engineer',
+      sayName: function() {
+        console.log(this.name);
+      }
+    };
+    /* 上面代码中, 我们将Person.prototype 设置为等于一个以对象字面量形式创建的新对象.
+      最后的结果是一样的. 但有一个问题: constructor 属性不再指向Person了,
+      (原型模式中说过: 每创建一个函数, 就会同时创建他的 prototype 对象, 这个对象也会自动获得constructor 属性)
+      而我们在这里使用的语法, 本质上完全重写了默认的 prototype 对象, 因此, constructor 属性也就变成了新对象的constructor 属性(指向Object构造函数)
+      不再指向Person() 函数, 尽管 instanceof 操作符还可以返回原结果, 但是constructor属性无法在确定对象类型了: */
+    var friend = new Person();
+    console.log(friend);
+    console.log(friend instanceof Object); // true
+    console.log(friend instanceof Person); // true
+    console.log(friend.constructor); // function Object() { [native code] }
+    // 我们看到, 用 instanceof 操作符测试 Object 和 Person 仍然返回 true, 但是 constructor 指向了 Object, 不再是 Person
+
+    // 如果 contructor 的值很重要, 可以向下面这样设置它为适当的返回值
+
+    Person.prototype = {
+      constructor: Person
+    };
+    // 上面代码特意包含了 constructor 属性, 并将它的值设置为 Person 从而确保了通过该属性能够访问到适当的值
+    /* 但是这样设置有个问题: 这种重设 constructot 属性会导致它的[[Enumerable]] 特性被设置为true!
+      默认情况下, 原生的constructor 属性是不可枚举的,因此如果使用兼容ECMAScript5 的引擎, 可以尝试:
+      Object.defineProperty() */
+    // 重设构造函数, 只是使用于兼容 ECMAScript5 以上的浏览器
+    Object.defineProperty(Person.prototype, 'constructor', {
+      enumerable: false,
+      value: Person
+    });
+    // 这样定义解决了直接设置 constructor属性导致的可枚举问题, 也重新指定了 constructor 指向 Person
+  </script>
+</body>
+
+</html>

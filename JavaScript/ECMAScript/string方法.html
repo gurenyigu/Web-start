@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<div id="box">
+  <p class="tr">
+    <span></span>
+  </p>
+</div>
+
+<body>
+  <script>
+    var box = document.getElementById('box');
+    var tr = document.getElementsByClassName('tr');
+    // string  字符串是不可更改的
+    var a = ' say goodbay world! ';
+
+    // 获得字符串相应位置的字符  string.charAt(i)
+    for (var i = 0; i < a.length; i++) {
+      // tr[0].innerHTML = '<span>' + a.charAt(i) + '</span>';
+      // console.log(tr[0].firstElementChild);
+      console.log(a.charAt(i));
+    }
+
+    /*------------------------------------动态插入srting内容到页面中--------------------------------*/
+    var i = 0;
+
+    function insert() {
+      if (i > a.length - 2) {
+        return;
+      }
+      var myspan = document.createElement('span');
+      // console.log(myspan);
+      i++;
+      // console.log(myspan.innerHTML = a.charAt(i));
+      tr[0].appendChild(myspan);
+      // tr[0].firstElementChild.innerHTML = a.charAt(i); //  NO!!!!
+      // tr[0].innerHTML = '<span>' + a.charAt(i) + '</span>'; // No!!!
+      setTimeout(insert, 200);
+    }
+    insert();
+
+
+    // 获得相应相应位置的字符编码
+    for (var j = 0; j < a.length; j++) {
+      console.log(a.charCodeAt(j));
+    }
+
+    // 查找字符所在字符串第一次出现的相应位置 以后的忽略
+    // indexOf(s[,fromIndex]) 从 fromIndex 值位置开始查找, 默认为0
+    console.log('indexOf: ', a.indexOf('bay'));
+    console.log(a.indexOf('hello')); // -1  如果不存在  则返回-1
+
+    // 链接字符串
+    // str.concat(string2, string3[, string4....])
+    var b = 'I Love My ';
+    var c = 'but I miss you';
+    console.log(a.concat(b, c));
+
+    // 切割字符串
+    // str.slice(begin[,end]);  对字符串进行切片操作, 返回新的字符串,
+    // 从begin开始, end结束 ,但是不包括end 默认为最后一位
+    var d = a.concat(b, c);
+    var e = d.indexOf('miss');
+    console.log(d.slice(e)); // miss you
+
+    // 根据指定长度切片
+    // str.substr(start[, length]); 返回从start开始长度为 length的字符串
+    /* start 可以为负数  当是负数时 为倒序 当start < 0时  默认从0开始
+    但是当start > str.length 时 不切片 */
+    // length可选  不传递参数默认到最后一位
+    var f = d.slice(e).length;
+    console.log(d.substr(e, f)); // miss you
+
+    // 根据长度智能切片?
+    // str.substring(indexStart[, indexEnd]);  注意: 当indexEnd < indexStart 则互换位置
+    console.log(a.substring(7, 0)); // say go
+    console.log(a.substring(0, 7)); // say go
+
+    // 字符串大小写转换
+    var test1 = 'ABC';
+    var test2 = 'def';
+    console.log(test2.toUpperCase()); // DEF
+    console.log(test1.toLowerCase()); // abc
+
+    // str.split([separator][, limit])
+    // 对字符串进行拆分  默认将整个字符串换为数组
+    console.log(d.split()); //[" say goodbay world! I Love My but I miss you"]
+    console.log(d.split('!', 3)); // [" say goodbay world", " I Love My but I miss you"]
+    // 更多参考Mozilla
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 讲组合模式前, 先说说原型对象的问题!!
+
+    // 原型对象的问题
+    /* 原型模式也不是没有缺点.首先,它省略了为构造函数传递初始化参数这一环节,结果所有实力在默认情况下都将取得相同的属性值
+      虽然这会在某种程度上带来一些不便,但还不是原型的最大问题. 原型模式的最大问题是由其共享的本质所导致的. */
+
+    /* 原型中所有属性是被很多实例共享的, 这种共享对于函数非常合适.对于那些包含基本值的属性倒也可以,
+      毕竟(如前面的例子),通过在实例上添加一个同名属性,可以隐藏原型中的对应属性,然而,对于包含引用类型值的属性来说,就有所不同了!
+      example: */
+    function Person() {}
+    Person.prototype = {
+      constructor: Person,
+      name: 'wu',
+      age: 20,
+      job: 'coders',
+      friends: ['shao', 'lei'],
+      sayName: function() {
+        console.log(this.name);
+      }
+    };
+
+    var person1 = new Person();
+    var person2 = new Person();
+
+    person1.friends.push('Van');
+
+    console.log(person1.friends); // ["shao", "lei", "Van"]
+    console.log(person2.friends); // ["shao", "lei", "Van"]
+    console.log(person1.friends === person2.friends); // true
+    /* 从此,Person.prototype 对象有一个名为friends 的属性, 该属性包含一个字符串数组.
+      然后创建了两个Person 的实例, 接着修改了 person1.friends 引用的数组, 向数组中添加了一个字符串.
+      由于friends 数组存在于Person.prototype 而不是 person1 的属性,
+      所以刚刚提到的修改也会通过 person2.friends 反映出来(毕竟均指向内存中同一个数组).
+      加入我们的初衷就是这样在所有实例中共享一个数组, 那么对这个结果很满意. 可以:
+      实例一般都是要有属于自己的全部属性的. 而这个问题正是我们很少看到有人单独使用原型模式的原因! */
+
+
+    // 组合使用构造函数模式和原型模式
+    /* 创建自定义类型的最常见方式, 就是组合使用构造函数模式 与 原型模式.
+      构造函数模式用于定义实例属性, 而原型模式用于定义方法和共享的属性.
+      结果, 每个实例都会有自己的一份实例属性的副本, 但同时又共享这对方发的引用,最大限度的节省了内存.
+      另外, 这中混成模式还支持向构造函数传递参数, 可谓是集两种之长, 下面重写后的例子: */
+    function Animal(type, age, gender) {
+      this.type = type;
+      this.age = age;
+      this.gender = gender;
+      this.friends = ['person', 'water'];
+    }
+
+    Animal.prototype = {
+      constructor: Animal,
+      sayType: function() {
+        console.log(this.type);
+      }
+    };
+
+    var dog = new Animal('dog', 2, 'female');
+    var cat = new Animal('cat', 1, 'male');
+
+    dog.friends.push('food');
+    console.log(dog.friends); // ["person", "water", "food"]
+    console.log(cat.friends); // ["person", "water"]
+    // 上面两个数组的内容不同, 说明不是共享的属性 解决了原型模式的共享问题
+    console.log(dog.friends === cat.friends); // false
+    console.log(dog.sayType === cat.sayType); // true (解决了构造函数重复创建相同方法的问题)
+
+    console.log(dog);
+    console.log(cat);
+    /* 上面例子中,实例属性都是在构造函数中定义的, 而由所有实例共享的属性 constructor 和方法 sayType() 则是在原型中定义的,
+      从而修改了 dog.friends(push一个新的字符串), 并不会影响到cat.friends 因为他们分别引用了不同的数组 */
+    /* 这种构造函数与原型混成的模式, 是目前在ECMAScript 中使用最广泛,认同度最高的一种创建自定义类型的方法, 可以说, 这是用来定义引用类型的一种默认模式 */
+  </script>
+</body>
+
+</html>

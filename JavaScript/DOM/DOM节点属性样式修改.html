@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <img src='image/png/allblacks.png' title='lol' alt='英雄联盟' id='img' onclick='lol()' />
+  <p>点击更换魔法少女吧!</p>
+
+  <p id='li'>
+    <sapn>设置属性</sapn>
+  </p>
+  <script>
+    /*--------------------------------使用 obj.value----------------------------------*/
+    var change = document.getElementById('img');
+    // 添加行内点击事件  触发设置属性操作
+    function lol() {
+      console.log(change);
+      // match() 方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配
+      console.log(change.src.match('allblacks'));
+      // 三母运算符  当 ? 前成立时  取 ? 后的值 否则取 : 后的值
+      change.src = change.src.match('allblacks') ? 'image/png/Bravest Cashew.png' : 'image/png/allblacks.png';
+
+      //  标签内的所有属性都可以用这种方法获得与修改
+      change.title.match('lol') ? console.log('haha') : console.log('lol');
+
+      // 修改/添加CSS 样式
+      change.style.border = '4px solid red';
+    }
+    var li = document.getElementById('li');
+    var span = li.firstElementChild;
+    span.id = 'span'; // 可以设置id
+    li.className = 'p'; // 可以设置class
+
+    /*-----------------------------------------使用obj.set/remove attribute-----------------------------------*/
+    span.setAttribute('class', 'tr td'); // 设置class
+    span.setAttribute('id', 's'); // 覆盖之前id
+    span.removeAttribute('class'); //删除 设置的class(所有属性值)
+
+
+
+    /*--------------------------------设置css(行内)样式-----------------------------*/
+    li.style.backgroundColor = '#542089'; // 可以实现添加/更改属性 功能
+    li.style.cssText = 'margin-top: 30px; max-width: 300px;' // 这样同意设置CSS样式的方法会覆盖之前的行内样式
+    li.style.color = 'red'; // 再插入一个css样式
+  </script>
+</body>
+
+</html>

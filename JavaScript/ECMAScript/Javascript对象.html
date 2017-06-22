@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+    // 对象有花括号分割,在罗号内部,对象的属性以名称和值的形式来定义(name: value).属性 以逗号分割
+    // 下面这个例子中有4个属性
+    var person = {
+      shao: 'xu',
+      liu: 'zengyin',
+      sun: 'quan',
+      wu: 'kaiyuan'
+    }
+    // 对象属性的寻址有两种方法
+    var name = person.shao;
+    console.log(name);
+    name = person['wu'];
+    console.log(name);
+    person['shao'] = person['shao'] + ',' + 'heng';
+    console.log(person['shao']);
+    console.log(person);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <img src="./images/constructor.png" alt="">
+  <script>
+    // 原型的动态性
+    // 由于在原型中差找值的过程是一次搜索, 因此我们对原型对象所作的任何修改都能够立即从实例上翻印出来, 即使是 先创建了实例后 修改原型 也是这样:
+    function Person() {}
+    var friend = new Person();
+    Person.prototype.sayHi = function() {
+      console.log('hi!');
+    };
+    friend.sayHi(); // 'hi'
+    /* 上面代码中先创建了Person的一个实例, 并将其保存在friend 中. 然后, 下一条语句在Person.prototype 中添加了一个方法 sayHi()
+      即使friend 实例是在添加新方法之前创建的, 但它仍然可以访问这个新方法. 其原因可以归纳为实例与原型之间的松散连接关系.
+      当我们调用friend.sayHi() 时,首先会在实例中搜索名为sayHi 的属性, 在没找到的情况下, 会继续搜索原型.
+      因为实例与原型之间的连接只不过是一个指针, 而非一个副本,因此就可以在原型中找到新的 sayHi 属性并返回保存在哪里的函数 */
+
+    /* 尽管可以随时为原型添加属性和方法, 并且修改能够立即在所有对象实例上反映出来, 但是如果是重写整个原型对象, 那么情况就不一样了
+      我们知道, 调用构造函数时会为实例添加一个指向最初原型的[[Prototype]]指针, 而把原型修改为另一个对象就相当于切断了构造函数与最初原型之间的联系.
+      注意: 实例中的指针指向原型, 而不指向构造函数 */
+    function Person1() {}
+    var friend2 = new Person1();
+    Person1.prototype = {
+      contructor: Person1,
+      name: 'nico',
+      age: 29,
+      job: 'Engineer',
+      sayName: function() {
+        console.log(this.name);
+      }
+    };
+    // friend2.sayName(); // Uncaught TypeError: friend2.sayName is not a function
+    /* 上面这个例子中, 我们先创建了一个 Person1 实例, 然后重写了其原型对象. 在调用 friend2.sayName() 时发生错误
+      因为friend2 指向的原型中不包含以该名字命名的属性  图6-3展示了这一内部发生的过程 */
+    /* 通过图片可以看出, 重写原型对象 切断了 现有原型 与任何之前已经存在的 对象实例 之间的联系; 他们引用的仍是最初的构造函数 */
+
+
+    // 原生对象的原型
+    /* 原型模式的重要性不仅体现在创建自定义类型方面, 就连所有原生的引用类型,都是采用这种模式创建的. 所有原生引用类型(Object Array String等)
+      都在其构造函数的原型上定义了方法. 例如: 在Array.prototype 中可以找到 sort() 方法. 而在 String.prototype 中可以找到substring() 方法: */
+    console.log(typeof Array.prototype.sort); // function
+    console.log(typeof String.prototype.substring); // function
+    /* 通过原生对象的原型, 不仅可以取得所有默认方法的引用,而且也可以定义新的方法.
+      可以像修改自定义对象的原型一样修改原生对象的原型,因此可以随时添加方法.
+      下面的代码就可以给基本包装类型 String 添加一个 startsWith() 方法 */
+    String.prototype.startsWith = function(text) {
+      return this.indexOf(text) == 0; // 传入参数在指定字符串的索引位置为 0
+    };
+
+    var msg = 'Hello world!';
+    console.log(msg.startsWith('Hello')); // true
+    /* 这里新定义的 startsWith() 方法会在传入的文本位于字符串第一个位置时返回true,
+      既然方法被添加给了 String.prototype, 那么当前环境中的所有字符串就都可以调用它, 由于msg是字符串
+      而且后台会调用 String 基本包装函数创建这个字符串, 因此通过msg 就可以调用 startsWith() 方法 */
+
+    /* 尽管可以这样做, 但是不推荐在产品化的程序中修改原生对象的原型, 如果因某个实现中缺少某个方法, \
+      就在原生对象的原型中添加这个方法,那么当在另一个支持该方法的实现中运行代码时,就可能会导致命名冲突.
+      而且这样做有可能重写原生方法 */
+  </script>
+</body>
+
+</html>
