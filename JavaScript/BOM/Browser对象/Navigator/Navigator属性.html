@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 以下均为可读属性, 且部分在不同浏览器有不同效果
+    // 1. appCodeName
+    // 这个属性是一个只读的字符串, 声明了浏览器代码
+    // 以网景(Netscape)代码为基础的浏览器中, 他的值是'Mozilla', 为了兼容起见, 在Microsoft浏览器中,值也为'Mozilla'
+    console.log(navigator.appCodeName); // Mozilla
+
+    // 2. appMinorVersion
+    // 返回浏览器版本
+    console.log(navigator.appMinorVersion); // undefined
+
+    // appVersion:
+    /* 返回只读字符串, 该属性返回浏览器平台和版本信息, 第一部分为版本号,
+      该字符串还提供了浏览器版本的其他细节, 与运行其操作系统信息 */
+    var version = navigator.appVersion;
+    // 不同浏览器提供信息是不同的!!
+    console.log(navigator.appVersion); // Mozilla: 5.0 (X11)   Chrome: 5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
+    // 该字符串传递给 parseInt() 可以获得版本号.
+    console.log(parseFloat(version)); // 5
+
+    // 3.appName
+    // 只读字符串, 声明了浏览器的名称, 在基于 Netscape 的浏览器中,这个属性值是 'Netscape'. 在IE中, 这个属性值是'Microsoft Internet Explorer'
+    // 其他浏览器可以正确的表示自己或者伪装称其他的浏览器以达到兼容问题
+    console.log(navigator.appName); // Mozilla/Chrome : 'Netscape'
+
+    // 4. navigator.borwserLanguage
+    // 属性可返回当前浏览器语言
+    console.log(navigator.borwserLanguage); // undefined
+
+    // 5. navigator.cookieEnabled
+    // 这个属性返回一个布尔值, 如果浏览器开启了 cookie, 为 true, 否则为 false
+    console.log(navigator.cookieEnabled); // true
+
+    // 6. navigator.cpuClassd
+    // 该属性可返回浏览器系统CPU等级
+    console.log(navigator.cpuClassd); // undefined
+
+    // 7. navigator.onLine
+    // 该属性是一个只读布尔值, 声明了系统是否处于脱机模式.
+    // 在IE 4+ 中, 用户可以在浏览器中选择脱机状态, 当脱机工作被选后, 系统就进入了脱机状态. 内容将从缓存进行读取
+    console.log(navigator.onLine);
+
+    // 8. navigator.platform
+    // 该属性是一个只读的字符串, 声明了运行浏览器的操作系统和(或)硬件平台, 虽然该属性没有标准值, 但是,比如: 'Win32' 'MacPPC' 'Linuxi586'等
+    console.log(navigator.platform); // Linux x86_64
+
+    // 9. navigator.systemLanguage
+    // 该属性返回操作系统使用的默认语言
+    console.log(navigator.systemLanguage); // undefined
+
+    // 10. navigator.userAgent
+    /* 该属性返回一个只读的字符串, 声明了浏览器用于 HTTP 请求的用户代理头的值.
+      一般来讲, 他是在  navigator.appCodeName 的值之后加上 斜线 和 navigator.appVersion 的值构成的. */
+    console.log(navigator.userAgent);
+
+    // 11. navigator.userLanguage
+    // 该属性返回操作系统的自然语言设置
+    console.log(navigator.userLanguage); // undefined
+
+    // navigator.javaEnabled() 对象
+    // 该方法可以返回一个布尔值, 该值指示浏览器是否支持并启用了 Java. 如果是, 则返回 true. 够则返回false
+    // 该方法检测当前浏览器是否支持java, 从而直到浏览器是否能显示 Java 小程序
+    console.log(navigator.javaEnabled()); // false
+
+    // navigator.taintEnabled()
+    // 该对象返回一个布尔值, 该值声明了当前浏览器是否启用了 data tainting
+    // console.log(navigator.taintEnabled());
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>location</title>
+</head>
+
+<body>
+  <img src="https://www.baidu.com/" alt="">
+
+  <script type="text/javascript">
+    // location 上的方法:
+
+
+    /* Location对象储存在window 对象的Location 属性中, 表示那个窗口中当前显示的文档的 Web地址. 它的 href 属性存放的是文档完整的URL地址,
+      其他属性则分别描述了URL 的各个部分. 这些属性与 Anchor 对象(或 Area对象)的URL 属性非常相似. 当一个 Location 对象被转换成字符串, href属性的值被返回.
+      这意味着你可以使用表达式 location 来代替 location.href */
+
+    /* 不过 Anchor 对象表示的是文档中的超链接, Loaction对象表示的却是浏览器当前显示的文档的 URL(或位置). 但是 Location 对象所能做到的远远不止这些,它还能控制浏览器显示的文档位置.
+      如果把一个含有 URL 的字符串赋予 Location 对象或他的href 属性, 浏览器就会把新的 URL 所值的文档装载进来, 并显示出来. */
+
+    // javascript代码加载到当前项会 将直接转跳到该地址
+    // window.location = "http://www.jd.com";
+    // location.href = "http://www.jd.com";
+
+
+    /* 除了 URL 属性外, Location 对象的 reload()方法可以重新装载当前文档, replace() 可以装载一个新文档而无需为它创建一个新的历史记录,
+      也就是说: 在浏览器历史列表中, 新文档将替换当前文档 */
+    // assign(): 加载新的文档:
+    // location.assign("http://www.jd.com")
+
+    // reload(): 重新加载当前文档:
+    // 这与浏览器上的刷新按钮的使用方法是完全一致的:
+    /* 该方法没有规定参数, 或者参数是false:, 他就会用HTTP头 If-Modified-Since 来检测服务器上当前文档是否已经改变
+     如果改变, 会重新加载当前文档, 未更改则从缓存中加载. */
+    // 这与单击浏览器刷新按钮时按住shift 效果一致
+    // 如果参数为 true, 那么无论该文档的最后下载日期是多少, 都会从服务器上重新获取该文档
+    // location.reload();
+
+
+    // replace: 获取新的文档, 取代当前文档:
+    // replace(newURL);
+    // 这个方法不会在 History 对象中生成一个新的记录. 当使用该方法时, 新的 URL 将覆盖 History对象中的当前记录
+    // location.replace("https://www.jd.com");
+
+
+    setInterval(function() {
+      //定时刷新, 重新指定 #*** 的hash 值 达到刷新的目地, 但是也可以使用reload()定时
+      // location.hash = Date.now();
+    }, 1000);
+  </script>
+
+</body>
+
+</html>
