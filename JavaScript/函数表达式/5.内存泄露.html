@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 由于 IE9 之前的版本对 JScript 对象 和 DOM对象使用不同的垃圾收集例程
+    // 因此闭包在 IE 的 这些版本中会导致一些特殊的问题. 具体来说, 如果闭包的作用域链中保存着一个 HTML 元素, 那么就意味着该元素将无法别销毁.
+
+    // 例子:
+    function assignHandler() {
+      var element = document.getElementById('someElement');
+      element.onclick = function() {
+        console.log(element.id);
+      };
+    }
+    /* 以上代码创建了一个作为 element 元素事件处理程序的闭包, 而这个闭包则又创建了一个循环引用. 由于匿名函数保存了一个对 assignHandler() 的活动对象的引用.
+      因此就会导致无法减少 element 的引用数. 只要匿名函数存在, element 的引用数至少也是1, 因此它所占用的内存就永远不会被回收.
+      不过, 这个问题可以通过稍微改写一下来解决. */
+
+    // 改写:
+    function assignHandler() {
+      var element = document.getElementById('someElement');
+      var id = element.id;
+
+      element.onclick = function() {
+        console.log(id);
+      };
+      element = null;
+    }
+
+    // 上面代码中将 element.id 的一个副本保存在一个变量中, 并且在闭包中引用该变量消除了循环引用. 但仅仅到这一步, 还是不能解决内存泄露问题.
+    // 记住: 闭包会在包含函数的整个活动对象, 而其中就有 element. 即使闭包不直接引用 element, 包含函数的活动对象中也仍然会保存一个引用, 因此, 有必要把element 变量设置为null
+    // 这样就能够解除对 DOM 对象的引用, 顺利地减少其引用次数, 确保正常的回收其占用的内存
+  </script>
+</body>
+
+</html>
